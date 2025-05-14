@@ -1,0 +1,90 @@
+/* src/styles/login.css */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Arial", sans-serif;
+  background: linear-gradient(to right, #4facfe, #00f2fe);
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Container */
+.login-container, .register-container {
+  background-color: #fff;
+  padding: 40px 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  width: 350px;
+  text-align: center;
+}
+
+/* Header */
+h2 {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* Form Styling */
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Label Styles */
+label {
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #555;
+  text-align: left;
+  display: inline-block;
+  width: 100%;
+}
+
+/* Input Fields */
+input {
+  padding: 12px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: border 0.3s;
+  width: 100%;
+}
+
+input:focus {
+  border-color: #4facfe;
+  outline: none;
+}
+
+/* Button Styles */
+button {
+  padding: 12px 20px;
+  background: linear-gradient(to right, #4facfe, #00f2fe);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background: linear-gradient(to right, #00f2fe, #4facfe);
+}
+
+/* Message Styling */
+p {
+  margin-top: 15px;
+  font-size: 14px;
+  color: #ff4d4d;
+}
+
+/* Success Message */
+.success-message {
+  margin-top: 15px;
+  font-size: 14px;
+  color: #4caf50;
+}
+
