@@ -1,0 +1,20 @@
+
+button, [type="button"], [type="reset"], [type="submit"] {
+    padding: 10px 45px;
+    text-transform: capitalize;
+    background: var(--primary-color);
+    color: var(--white-color);
+    display: inline-block;
+    border: none;
+    width: max-content;
+    height: 48px;
+    line-height: 2;
+    border-radius: 10px;
+}
+
+button, [type="button"]:hover, [type="reset"]:hover, [type="submit"]:hover {
+    background: var(--dark-color);
+    color: var(--white-color);
+}
+
+
