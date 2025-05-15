@@ -9,7 +9,7 @@ button, [type="button"], [type="reset"], [type="submit"] {
     width: max-content;
     height: 48px;
     line-height: 2;
-    border-radius: 10px;
+    border-radius: var(--border-redius);
 }
 
 button, [type="button"]:hover, [type="reset"]:hover, [type="submit"]:hover {

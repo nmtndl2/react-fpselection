@@ -1,5 +1,6 @@
 import React from "react";
 import AppRoutes from "./routes/appRoutes";
+import "./styles/global.css";
 
 function App() {
   return (

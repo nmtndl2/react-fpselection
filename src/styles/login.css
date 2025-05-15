@@ -30,22 +30,6 @@ label {
   width: 100%;
 }
 
-/* Input Fields */
-input {
-  padding: 12px;
-  margin-bottom: 15px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 14px;
-  transition: border 0.3s;
-  width: 100%;
-}
-
-input:focus {
-  border-color: #4facfe;
-  outline: none;
-}
-
 
 /* Message Styling */
 p {

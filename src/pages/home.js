@@ -5,7 +5,7 @@ import InputForm from "./inputForm"; // adjust path if needed
 
 const Home = () => {
   const navigate = useNavigate();
-  const [showForm, setShowForm] = useState(false); // state to toggle form
+  const [showForm] = useState(false); 
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -13,7 +13,7 @@ const Home = () => {
   };
 
   const handleShowForm = () => {
-    setShowForm(true);
+    navigate("/input");
   };
 
   return (
