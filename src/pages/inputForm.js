@@ -1,9 +1,10 @@
 // src/InputForm.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Button from "../components/button";
 import "../styles/inputForm.css";
-import { useEffect } from 'react';
+import TimePicker from 'react-time-picker';
+import 'react-time-picker/dist/TimePicker.css';
 
 const InputForm = () => {
     const [formData, setFormData] = useState({
@@ -21,21 +22,24 @@ const InputForm = () => {
         washingT: '',
         sqOutletT: '',
         cusFeedRate: '',
-        cakeWashing: false
+        cakeWashing: false,
+        clothWashing: false,
+        pressSizes: [],
     });
 
     const [errors, setErrors] = useState({});
     const [response, setResponse] = useState(null);
     const [plateTypes, setPlateTypes] = useState([]);
+    const [pressSizes, setPressSizes] = useState([]);
 
     const labels = {
         clientName: 'Client Name',
         clientRef: 'Client Reference',
         sludgeName: 'Sludge Name',
         sludgeType: 'Sludge Type',
-        sludgeQty: 'Sludge Quantity (kg)',
+        sludgeQty: 'Sludge Quantity (m³/hr)',
         drySolidParticle: 'Dry Solid Particle (%)',
-        densityOfDrySolid: 'Density of Dry Solid (kg/m³)',
+        densityOfDrySolid: 'Density of Dry Solid (g/cm³)',
         moistureContain: 'Moisture Content (%)',
         noOfPress: 'Number of Presses',
         noOfBatch: 'Number of Batches',
@@ -43,26 +47,42 @@ const InputForm = () => {
         washingT: 'Washing Time (mins)',
         sqOutletT: 'Squeeze Outlet Time (mins)',
         cusFeedRate: 'Custom Feed Rate (L/min)',
-        cakeWashing: 'Cake Washing'
+        cakeWashing: 'Cake Washing',
+        clothWashing: 'Cloth Washing',
+        pressSizes: 'Available Press Sizes',
     };
 
     const groupedFields = {
         "Client Details": ['clientName', 'clientRef'],
         "Sludge Information": ['sludgeName', 'sludgeType', 'sludgeQty', 'drySolidParticle', 'densityOfDrySolid', 'moistureContain'],
-        "Press Configuration": ['noOfPress', 'noOfBatch', 'plateType', 'cakeWashing'],
-        "Cycle Timing Settings": ['washingT', 'sqOutletT', 'cusFeedRate']
+        "Press Configuration": ['plateType', 'cakeWashing', 'clothWashing', 'pressSizes'],
+        "Cycle Timing Settings": ['cusFeedRate', 'noOfPress', 'noOfBatch']
     };
 
     useEffect(() => {
         axios.get('http://localhost:8081/api/platetype/fetch')
-            .then(res => {
-                setPlateTypes(res.data);
-            })
-            .catch(err => {
-                console.error('Error fetching plate types:', err);
-            });
+            .then(res => setPlateTypes(res.data))
+            .catch(err => console.error('Error fetching plate types:', err));
     }, []);
 
+    useEffect(() => {
+        if (formData.plateType) {
+            axios
+                .get(`http://localhost:8081/api/plate/fetch/presssize`, {
+                    params: { plateType: formData.plateType },
+                })
+                .then((res) => {
+                    setPressSizes(res.data); // ✅ Correct
+                    setFormData(prev => ({ ...prev, pressSizes: [] }));
+                })
+                .catch((err) => {
+                    console.error("Failed to fetch press sizes", err);
+                    setPressSizes([]);
+                });
+        } else {
+            setPressSizes([]);
+        }
+    }, [formData.plateType]);
 
     const validate = () => {
         const newErrors = {};
@@ -72,17 +92,17 @@ const InputForm = () => {
         if (!formData.sludgeName.trim()) newErrors.sludgeName = "Sludge name is required";
         if (!formData.sludgeType.trim()) newErrors.sludgeType = "Sludge type is required";
 
-        if (!isInteger(formData.noOfPress)) newErrors.noOfPress = "Number of presses must be an integer";
-        if (!isInteger(formData.noOfBatch)) newErrors.noOfBatch = "Number of batches must be an integer";
-        if (!isInteger(formData.cusFeedRate)) newErrors.cusFeedRate = "Feed rate must be an integer";
-
         if (!isInteger(formData.sludgeQty)) newErrors.sludgeQty = "Sludge Qty must be an integer";
         if (!isInteger(formData.drySolidParticle)) newErrors.drySolidParticle = "Dry solid particle must be an integer";
         if (!isInteger(formData.moistureContain)) newErrors.moistureContain = "Moisture content must be an integer";
 
         if (!formData.plateType.trim()) newErrors.plateType = "Plate type is required";
 
-        if (formData.cakeWashing === true && !formData.washingT.trim()) { newErrors.washingT = "Washing time is required when Cake Washing is selected"; }
+        if (formData.cakeWashing === true) {
+            if (!formData.washingT.trim()) {
+                newErrors.washingT = "Washing time is required when Cake Washing is selected";
+            }
+        }
 
         return newErrors;
     };
@@ -102,19 +122,13 @@ const InputForm = () => {
             if (value === '' || /^[0-9]*$/.test(value)) {
                 setErrors((prev) => ({ ...prev, [name]: '' }));
             } else {
-                setErrors((prev) => ({
-                    ...prev,
-                    [name]: 'Only numeric values (0–9) are allowed'
-                }));
+                setErrors((prev) => ({ ...prev, [name]: 'Only numeric values (0–9) are allowed' }));
             }
         } else if (floatFields.includes(name)) {
             if (value === '' || /^\d*\.?\d+$/.test(value)) {
                 setErrors((prev) => ({ ...prev, [name]: '' }));
             } else {
-                setErrors((prev) => ({
-                    ...prev,
-                    [name]: 'Only numeric values are allowed (e.g., 123 or 123.45)'
-                }));
+                setErrors((prev) => ({ ...prev, [name]: 'Only numeric values are allowed (e.g., 123 or 123.45)' }));
             }
         } else {
             setErrors((prev) => ({ ...prev, [name]: '' }));
@@ -139,8 +153,6 @@ const InputForm = () => {
             alert('Error submitting form');
         }
     };
-
-
 
     const responseLabels = {
         totalDrySolid: "Total Dry Solid (kg)",
@@ -173,6 +185,13 @@ const InputForm = () => {
         message: "Message"
     };
 
+    <TimePicker
+        onChange={(value) =>
+            setFormData((prev) => ({ ...prev, washingT: value }))
+        }
+        value={formData.washingT}
+    />
+
     return (
         <div>
             <h2>Press Configuration Input</h2>
@@ -196,30 +215,72 @@ const InputForm = () => {
                                                 <option key={pt.plateTypeId} value={pt.typeName}>{pt.typeName}</option>
                                             ))}
                                         </select>
-                                    ) : key === 'cakeWashing' ? (
-                                        <div >
+                                    ) : key === 'cakeWashing' || key === 'clothWashing' ? (
+                                        <div>
                                             <div style={{ display: 'grid', gridTemplateColumns: '50px auto', gap: '10px' }}>
                                                 <label>
                                                     <input
                                                         type="radio"
-                                                        name="cakeWashing"
+                                                        name={key}
                                                         value="true"
-                                                        checked={formData.cakeWashing === true}
-                                                        onChange={() => setFormData({ ...formData, cakeWashing: true })}
+                                                        checked={formData[key] === true}
+                                                        onChange={() =>
+                                                            setFormData((prev) => ({
+                                                                ...prev,
+                                                                [key]: true,
+                                                                ...(key === 'cakeWashing' && { washingT: prev.washingT }) // keep washingT unchanged if cakeWashing true
+                                                            }))
+                                                        }
                                                     />{' '}
                                                     Yes
                                                 </label>
                                                 <label>
                                                     <input
                                                         type="radio"
-                                                        name="cakeWashing"
+                                                        name={key}
                                                         value="false"
-                                                        checked={formData.cakeWashing === false}
-                                                        onChange={() => setFormData({ ...formData, cakeWashing: false })}
+                                                        checked={formData[key] === false}
+                                                        onChange={() =>
+                                                            setFormData((prev) => ({
+                                                                ...prev,
+                                                                [key]: false,
+                                                                ...(key === 'cakeWashing' && { washingT: '' }) // clear washingT if cakeWashing is set to false
+                                                            }))
+                                                        }
                                                     />{' '}
                                                     No
                                                 </label>
                                             </div>
+                                        </div>
+                                    ) : key === 'pressSizes' ? (
+                                        <div className="checkbox-group" style={errors[key] ? { border: '1px solid red', padding: '8px', borderRadius: '4px' } : {}}>
+                                            {pressSizes.map((size, index) => (
+                                                <div key={index} style={{ display: 'flex', alignItems: 'center' }}>
+                                                    <input
+                                                        type="checkbox"
+                                                        id={`pressSize-${index}`}
+                                                        value={size}
+                                                        checked={formData.pressSizes.includes(size)}
+                                                        onChange={(e) => {
+                                                            const { checked, value } = e.target;
+                                                            setFormData(prev => ({
+                                                                ...prev,
+                                                                pressSizes: checked
+                                                                    ? [...prev.pressSizes, value]
+                                                                    : prev.pressSizes.filter(s => s !== value)
+                                                            }));
+                                                        }}
+                                                    />
+                                                    <label htmlFor={`pressSize-${index}`} style={{ marginLeft: '6px' }}>
+                                                        {size}
+                                                    </label>
+                                                </div>
+                                            ))}
+                                            {errors[key] && (
+                                                <div style={{ color: 'red', fontSize: '12px', marginTop: '4px' }}>
+                                                    {errors[key]}
+                                                </div>
+                                            )}
                                         </div>
                                     ) : (
                                         <input
@@ -234,6 +295,48 @@ const InputForm = () => {
                                 {errors[key] && <div style={{ color: 'red', fontSize: '12px' }}>{errors[key]}</div>}
                             </div>
                         ))}
+
+                        {groupName === 'Cycle Timing Settings' && formData.cakeWashing && (
+                            <div style={{ marginBottom: '10px' }}>
+                                <label>
+                                    {labels['washingT']}:
+                                    <div>
+                                        <TimePicker
+                                            onChange={(value) =>
+                                                setFormData((prev) => ({ ...prev, washingT: value }))
+                                            }
+                                            value={formData.washingT}
+                                            disableClock
+                                            format="HH:mm:ss"
+                                            clearIcon={null}
+                                            className={errors.washingT ? 'time-picker-error' : ''}
+                                        />
+                                    </div>
+                                </label>
+                                {errors.washingT && (
+                                    <div style={{ color: 'red', fontSize: '12px' }}>{errors.washingT}</div>
+                                )}
+                            </div>
+                        )}
+
+                        {groupName === 'Cycle Timing Settings' && formData.plateType === 'Membrane' && (
+                            <div style={{ marginBottom: '10px' }}>
+                                <label>
+                                    {labels['sqOutletT']}:
+                                    <input
+                                        type="text"
+                                        name="sqOutletT"
+                                        value={formData.sqOutletT}
+                                        onChange={handleChange}
+                                        style={errors.sqOutletT ? { borderColor: 'red' } : {}}
+                                    />
+                                </label>
+                                {errors.sqOutletT && <div style={{ color: 'red', fontSize: '12px' }}>{errors.sqOutletT}</div>}
+                            </div>
+                        )}
+
+                        
+
                     </fieldset>
                 ))}
                 <div className='button-container' style={{ gridColumn: '1 / span 4', margin: '0 auto' }}>
@@ -241,48 +344,18 @@ const InputForm = () => {
                 </div>
             </form>
 
-            {formData.cakeWashing === true && (
-                <fieldset>
-                    <legend><strong>Cake Washing Settings</strong></legend>
-                    <div style={{ marginBottom: '10px' }}>
-                        <label>
-                            {labels["washingT"]}:
-                            <input
-                                type="text"
-                                name="washingT"
-                                value={formData.washingT}
-                                onChange={handleChange}
-                                style={
-                                    formData.cakeWashing === true && errors["washingT"]
-                                        ? { borderColor: 'red' }
-                                        : {}
-                                }
-                            />
-                        </label>
-                        {formData.cakeWashing === true && errors["washingT"] && (
-                            <div style={{ color: 'red', fontSize: '12px' }}>{errors["washingT"]}</div>
-                        )}
-                    </div>
-                </fieldset>
-            )}
-
             {response && (
                 <div>
                     <h3>Response:</h3>
 
                     {response.slurryResponse && (
-                        <div>
+                        <div style={{ width: '450px' }}>
                             <h4>Slurry Response</h4>
                             <table border="1" cellPadding="8" cellSpacing="0">
-                                <thead>
-                                    <tr><th>Field</th><th>Value</th></tr>
-                                </thead>
+                                <thead><tr><th>Field</th><th>Value</th></tr></thead>
                                 <tbody>
                                     {Object.entries(response.slurryResponse).map(([key, value]) => (
-                                        <tr key={key}>
-                                            <td>{responseLabels[key] || key}</td>
-                                            <td>{value}</td>
-                                        </tr>
+                                        <tr key={key}><td>{responseLabels[key] || key}</td><td>{value}</td></tr>
                                     ))}
                                 </tbody>
                             </table>
@@ -297,15 +370,10 @@ const InputForm = () => {
                                     <div style={{ width: '100%' }}>
                                         <h5>Press {index + 1}</h5>
                                         <table border="1" cellPadding="8" cellSpacing="0">
-                                            <thead>
-                                                <tr><th>Field</th><th>Value</th></tr>
-                                            </thead>
+                                            <thead><tr><th>Field</th><th>Value</th></tr></thead>
                                             <tbody>
                                                 {Object.entries(pressData).map(([key, value]) => (
-                                                    <tr key={key}>
-                                                        <td>{responseLabels[key] || key}</td>
-                                                        <td>{value}</td>
-                                                    </tr>
+                                                    <tr key={key}><td>{responseLabels[key] || key}</td><td>{value}</td></tr>
                                                 ))}
                                             </tbody>
                                         </table>
@@ -313,15 +381,10 @@ const InputForm = () => {
                                     <div style={{ width: '100%' }}>
                                         <h5>Press Time {index + 1}</h5>
                                         <table border="1" cellPadding="8" cellSpacing="0">
-                                            <thead>
-                                                <tr><th>Field</th><th>Value</th></tr>
-                                            </thead>
+                                            <thead><tr><th>Field</th><th>Value</th></tr></thead>
                                             <tbody>
                                                 {Object.entries(response.pressTResponse[index] || {}).map(([key, value]) => (
-                                                    <tr key={key}>
-                                                        <td>{responseLabels[key] || key}</td>
-                                                        <td>{value}</td>
-                                                    </tr>
+                                                    <tr key={key}><td>{responseLabels[key] || key}</td><td>{value}</td></tr>
                                                 ))}
                                             </tbody>
                                         </table>

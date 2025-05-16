@@ -178,8 +178,15 @@ table {
 
 table td, table th {
     border: 1px solid var(--grey-color);
-    padding: 8px;
+    padding: 2px 8px;
     text-align: left;
+}
+
+/*===== Check Box =====*/
+.checkbox-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 10px;
 }
 
 /*===== Input Textarea =====*/
