@@ -1,14 +1,13 @@
 
 button, [type="button"], [type="reset"], [type="submit"] {
-    padding: 10px 45px;
+    padding: 8px 22px;
     text-transform: capitalize;
     background: var(--primary-color);
     color: var(--white-color);
     display: inline-block;
     border: none;
     width: max-content;
-    height: 48px;
-    line-height: 2;
+    height: 36px;
     border-radius: var(--border-redius);
 }
 

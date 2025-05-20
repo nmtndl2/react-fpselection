@@ -1,10 +1,14 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import Login from "../pages/login";
-import Register from "../pages/register";
+import Login from "../pages/auth/login";
+import Register from "../pages/auth/register";
 import Home from "../pages/home";
-import AboutUs from "../pages/about";
+import AboutUs from "../pages/extra/about";
 import InputForm from "../pages/inputForm";
+import AddPlateTypeForm from "../pages/plateType/addPlateType";
+import AddPlateForm from "../pages/plate/addPlate";
+import AddPressForm from "../pages/press/addPress";
+
 
 // const isAuthenticated = () => {
 //   return localStorage.getItem("token") !== null;
@@ -32,6 +36,10 @@ const AppRoutes = () => {
 
         {/* Input Form Route */}
         <Route path="/input" element={<PrivateRoute element={<InputForm />} />} />
+        <Route path="/input" element={<PrivateRoute element={<AddPlateTypeForm />} />} />
+        <Route path="/input" element={<PrivateRoute element={<AddPlateForm />} />} />
+        <Route path="/input" element={<PrivateRoute element={<AddPressForm />} />} />
+
 
         {/* Fallback Route */}
         <Route path="*" element={<Navigate to="/login" replace />} />

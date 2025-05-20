@@ -185,6 +185,26 @@ const InputForm = () => {
         message: "Message"
     };
 
+    const placeholders = {
+    clientName: 'Enter client name',
+    clientRef: 'Enter client reference',
+    sludgeName: 'Enter sludge name',
+    sludgeType: 'Enter sludge type',
+    sludgeQty: 'Enter sludge quantity (e.g., in kg)',
+    drySolidParticle: 'Enter % of dry solid particles',
+    densityOfDrySolid: 'Enter density of dry solid (e.g., kg/m³)',
+    moistureContain: 'Enter moisture content (%)',
+    noOfPress: 'Enter number of presses',
+    noOfBatch: 'Enter number of batches',
+    plateType: 'Select plate type',
+    washingT: 'Enter washing time (HH:mm:ss)',
+    sqOutletT: 'Enter squeeze outlet time',
+    cusFeedRate: 'Enter custom feed rate (e.g., L/min)',
+    pressSizes: 'Select press sizes',
+    cakeWashing: '',
+    clothWashing: '',
+};
+
     <TimePicker
         onChange={(value) =>
             setFormData((prev) => ({ ...prev, washingT: value }))
@@ -208,6 +228,7 @@ const InputForm = () => {
                                             name={key}
                                             value={formData[key]}
                                             onChange={handleChange}
+                                            
                                             style={errors[key] ? { borderColor: 'red' } : {}}
                                         >
                                             <option value="" disabled hidden>Select Plate Type</option>
@@ -261,6 +282,7 @@ const InputForm = () => {
                                                         id={`pressSize-${index}`}
                                                         value={size}
                                                         checked={formData.pressSizes.includes(size)}
+
                                                         onChange={(e) => {
                                                             const { checked, value } = e.target;
                                                             setFormData(prev => ({
@@ -288,6 +310,8 @@ const InputForm = () => {
                                             name={key}
                                             value={formData[key]}
                                             onChange={handleChange}
+                                            // placeholder={`Enter ${labels[key] || key}`}
+                                            placeholder={placeholders[key] || `Enter ${labels[key] || key}`}
                                             style={errors[key] ? { borderColor: 'red' } : {}}
                                         />
                                     )}
