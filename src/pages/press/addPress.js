@@ -54,30 +54,30 @@ const placeholders = {
 
 
 const labels = {
-    pressSize: 'Press Size',
-    maxChamber: 'Max Chamber',
-    cakeAirT: 'Cake Air Time',
-    cyFwdT: 'Cylindrical Forward Time',
-    cyRevT: 'Cylindrical Reverse Time',
-    dtAvailable: 'DT Available',
-    dtOpenT: 'DT Open Time',
-    dtClosedT: 'DT Closed Time',
-    psAvailable: 'PS Available',
-    psFwdFPlateT: 'PS Forward First Plate Time',
-    psFwdT: 'PS Forward Time',
-    psFwdDT: 'PS Forward Delay Time',
-    psRevT: 'PS Reverse Time',
-    psRevDT: 'PS Reverse Delay Time',
-    cwAvailable: 'CW Available',
-    cwFwdT: 'CW Forward Time',
-    cwFwdDT: 'CW Forward Delay Time',
-    cwRevT: 'CW Reverse Time',
-    cwRevDT: 'CW Reverse Delay Time',
-    cwDownT: 'CW Down Time',
-    cwDownDT: 'CW Down Delay Time',
-    cwUpT: 'CW Up Time',
-    cwUpDT: 'CW Up Delay Time',
-    cwFlowRate: 'CW Flow Rate',
+  pressSize: 'Press Size',
+  maxChamber: 'Max Chamber',
+  cakeAirT: 'Cake Air Time',
+  cyFwdT: 'Cylindrical Forward Time',
+  cyRevT: 'Cylindrical Reverse Time',
+  dtAvailable: 'DT Available',
+  dtOpenT: 'DT Open Time',
+  dtClosedT: 'DT Closed Time',
+  psAvailable: 'PS Available',
+  psFwdFPlateT: 'PS Forward First Plate Time',
+  psFwdT: 'PS Forward Time',
+  psFwdDT: 'PS Forward Delay Time',
+  psRevT: 'PS Reverse Time',
+  psRevDT: 'PS Reverse Delay Time',
+  cwAvailable: 'CW Available',
+  cwFwdT: 'CW Forward Time',
+  cwFwdDT: 'CW Forward Delay Time',
+  cwRevT: 'CW Reverse Time',
+  cwRevDT: 'CW Reverse Delay Time',
+  cwDownT: 'CW Down Time',
+  cwDownDT: 'CW Down Delay Time',
+  cwUpT: 'CW Up Time',
+  cwUpDT: 'CW Up Delay Time',
+  cwFlowRate: 'CW Flow Rate',
 };
 
 
@@ -95,22 +95,64 @@ const AddPressForm = () => {
   const [error, setError] = useState(null);
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    const newValue = type === 'checkbox' ? checked : value;
-    setFormData((prev) => ({ ...prev, [name]: newValue }));
-    setErrors((prev) => ({ ...prev, [name]: null }));
-  };
+  const { name, value, type, checked } = e.target;
+  const newValue = type === 'checkbox' ? checked : value;
+
+  setFormData((prev) => {
+    const updated = { ...prev, [name]: newValue };
+
+    // Auto-set psAvailable and dtAvailable to true if cwAvailable is checked
+    if (name === 'cwAvailable' && newValue === true) {
+      updated.psAvailable = true;
+      updated.dtAvailable = true;
+    }
+
+    return updated;
+  });
+
+  setErrors((prev) => ({ ...prev, [name]: null }));
+};
 
   const validate = () => {
     const newErrors = {};
     const requiredFields = ['pressSize', 'maxChamber', 'cakeAirT', 'cyFwdT', 'cyRevT', 'cwFlowRate'];
 
+    // Always required fields
     requiredFields.forEach((field) => {
       if (!formData[field].toString().trim()) {
         newErrors[field] = 'This field is required';
       }
     });
 
+    // Conditionally required fields
+    if (formData.dtAvailable) {
+      ['dtOpenT', 'dtClosedT'].forEach((field) => {
+        if (!formData[field].toString().trim()) {
+          newErrors[field] = 'This field is required when DT is available';
+        }
+      });
+    }
+
+    if (formData.psAvailable) {
+      ['psFwdFPlateT', 'psFwdT', 'psFwdDT', 'psRevT', 'psRevDT'].forEach((field) => {
+        if (!formData[field].toString().trim()) {
+          newErrors[field] = 'This field is required when PS is available';
+        }
+      });
+    }
+
+    if (formData.cwAvailable) {
+      [
+        'cwFwdT', 'cwFwdDT', 'cwRevT', 'cwRevDT',
+        'cwDownT', 'cwDownDT', 'cwUpT', 'cwUpDT'
+      ].forEach((field) => {
+        if (!formData[field].toString().trim()) {
+          newErrors[field] = 'This field is required when CW is available';
+        }
+      });
+    }
+
+    // Specific validations
     if (formData.maxChamber && !/^\d+$/.test(formData.maxChamber)) {
       newErrors.maxChamber = 'Must be an integer';
     }
@@ -123,14 +165,42 @@ const AddPressForm = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
 
+    // Prepare data with conditional nulls
+    const sanitizedData = { ...formData };
+
+    if (!formData.dtAvailable) {
+      sanitizedData.dtOpenT = null;
+      sanitizedData.dtClosedT = null;
+    }
+
+    if (!formData.psAvailable) {
+      sanitizedData.psFwdFPlateT = null;
+      sanitizedData.psFwdT = null;
+      sanitizedData.psFwdDT = null;
+      sanitizedData.psRevT = null;
+      sanitizedData.psRevDT = null;
+    }
+
+    if (!formData.cwAvailable) {
+      sanitizedData.cwFwdT = null;
+      sanitizedData.cwFwdDT = null;
+      sanitizedData.cwRevT = null;
+      sanitizedData.cwRevDT = null;
+      sanitizedData.cwDownT = null;
+      sanitizedData.cwDownDT = null;
+      sanitizedData.cwUpT = null;
+      sanitizedData.cwUpDT = null;
+    }
+
     try {
       const res = await axios.post(
         'http://localhost:8081/api/press/addPress',
-        formData,
+        sanitizedData,
         { headers: { 'Content-Type': 'application/json' } }
       );
       setResponse(res.data);
@@ -141,6 +211,7 @@ const AddPressForm = () => {
       setResponse(null);
     }
   };
+
 
   return (
     <div style={{ border: '1px solid #ccc', padding: '20px', marginTop: '40px' }}>
