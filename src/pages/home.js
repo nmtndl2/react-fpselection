@@ -5,6 +5,7 @@ import InputForm from "./inputForm";
 import AddPlateTypeForm from "./plateType/addPlateType";
 import AddPlateForm from "./plate/addPlate";
 import AddPressForm from "./press/addPress";
+import AddFeedPumpForm from "./feedPump/addFeddPump";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -12,6 +13,7 @@ const Home = () => {
   const [showAddPlateTypeForm, setShowAddPlateTypeForm] = useState(false);
   const [showAddPlateForm, setShowAddPlateForm] = useState(false);
   const [showAddPressForm, setShowAddPressForm] = useState(false);
+  const [showAddFeedPumpForm, setShowAddFeedPumpForm] = useState(false);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -34,6 +36,10 @@ const Home = () => {
     setShowAddPressForm(!showAddPressForm);
   };
 
+  const toggleAddFeedPumpForm = () => {
+    setShowAddFeedPumpForm(!showAddFeedPumpForm);
+  };
+
   return (
     <div className="home-container">
       <h2>Welcome to Home Page!</h2>
@@ -48,6 +54,8 @@ const Home = () => {
         <Button label="Add Plate" onClick={toggleAddPlateForm} />
         <span style={{ marginRight: "10px" }}></span>
         <Button label="Add Press" onClick={toggleAddPressForm} />
+        <span style={{ marginRight: "10px" }}></span>
+        <Button label="Add Feed Pump" onClick={toggleAddFeedPumpForm} />
       </div>
 
       {showInputForm && (
@@ -71,6 +79,12 @@ const Home = () => {
       {showAddPressForm && (
         <div style={{ marginTop: "20px" }}>
           <AddPressForm />
+        </div>
+      )}
+
+      {showAddFeedPumpForm && (
+        <div style={{ marginTop: "20px" }}>
+          <AddFeedPumpForm />
         </div>
       )}
 

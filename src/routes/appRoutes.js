@@ -8,6 +8,7 @@ import InputForm from "../pages/inputForm";
 import AddPlateTypeForm from "../pages/plateType/addPlateType";
 import AddPlateForm from "../pages/plate/addPlate";
 import AddPressForm from "../pages/press/addPress";
+import AddFeedPumpForm from "../pages/feedPump/addFeddPump";
 
 
 // const isAuthenticated = () => {
@@ -39,6 +40,7 @@ const AppRoutes = () => {
         <Route path="/input" element={<PrivateRoute element={<AddPlateTypeForm />} />} />
         <Route path="/input" element={<PrivateRoute element={<AddPlateForm />} />} />
         <Route path="/input" element={<PrivateRoute element={<AddPressForm />} />} />
+        <Route path="/input" element={<PrivateRoute element={<AddFeedPumpForm />} />} />
 
 
         {/* Fallback Route */}

@@ -64,46 +64,54 @@ const Register = () => {
   };
 
   return (
-    <div className="login-container">
-      <h2>Register</h2>
-      {/* Show success or error message */}
-      {message.text && (
-        <p className={`message ${message.type}`}>{message.text}</p>
-      )}
+    <div className="login-page">
+      <div className="login-container">
+        <h2>Register</h2>
+        {/* Show success or error message */}
+        {message.text && (
+          <p className={`message ${message.type}`}>{message.text}</p>
+        )}
 
-      <form onSubmit={handleSubmit}>
-        {/* Email Input */}
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={handleChange}
-          required
-        />
+        <form onSubmit={handleSubmit}>
+          {/* Email Input */}
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
 
-        {/* Password Input */}
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={handleChange}
-          required
-        />
+          {/* Password Input */}
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+          />
 
-        {/* Confirm Password Input */}
-        <input
-          type="password"
-          name="confirmPassword"
-          placeholder="Re-enter Password"
-          value={formData.confirmPassword}
-          onChange={handleChange}
-          required
-        />
+          {/* Confirm Password Input */}
+          <input
+            type="password"
+            name="confirmPassword"
+            placeholder="Re-enter Password"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            required
+          />
 
-        <button type="submit">Register</button>
-      </form>
+          <button type="submit">Register</button>
+          <p>
+            Already have an account?{" "}
+            <a href="/login" style={{ color: "#007bff" }}>
+              Login
+            </a>
+          </p>
+        </form>
+      </div>
     </div>
   );
 };

@@ -54,38 +54,40 @@ const Login = () => {
   };
 
   return (
-    <div className="login-container">
-      <h2>Login</h2>
-      {/* Show success or error message */}
-      {message.text && (
-        <p className={`message ${message.type}`}>{message.text}</p>
-      )}
+    <div className="login-page">
+      <div className="login-container">
+        <h2>Login</h2>
+        {/* Show success or error message */}
+        {message.text && (
+          <p className={`message ${message.type}`}>{message.text}</p>
+        )}
 
-      <form onSubmit={handleSubmit}>
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={handleChange}
-          required
-        />
-        <button type="submit">Login</button>
-      </form>
+        <form onSubmit={handleSubmit}>
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+          />
+          <button type="submit">Login</button>
+        </form>
 
-      {/* New User Registration Button */}
-      <div className="register-link">
-        <p>
-          New User? <Link to="/register">Register here</Link>
-        </p>
+        {/* New User Registration Button */}
+        <div className="register-link">
+          <p>
+            New User? <Link to="/register">Register here</Link>
+          </p>
+        </div>
       </div>
     </div>
   );
