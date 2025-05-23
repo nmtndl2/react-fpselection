@@ -23,7 +23,7 @@ const AddFeedPumpForm = () => {
   };
 
   const addRange = () => {
-    setChamberRanges([...chamberRanges, initialChamberRange]);
+    setChamberRanges([...chamberRanges, { flowRate: '' }]);
   };
 
   const removeRange = (index) => {
@@ -95,38 +95,49 @@ const AddFeedPumpForm = () => {
           {errors.pressSize && <div style={{ color: 'red' }}>{errors.pressSize}</div>}
         </div>
 
+        <div>
+        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
         <h4>Chamber Ranges</h4>
-        {chamberRanges.map((range, index) => (
-          <div key={index} style={{ marginBottom: '10px' }}>
-            <input
-              type="text"
-              placeholder="Range Label (e.g., 0-30)"
-              value={range.rangeLabel}
-              onChange={(e) => handleRangeChange(index, 'rangeLabel', e.target.value)}
-              style={errors[`range-${index}-rangeLabel`] ? { borderColor: 'red' } : {}}
-            />
-            <input
-              type="text"
-              placeholder="Flow Rate (e.g., 10)"
-              value={range.flowRate}
-              onChange={(e) => handleRangeChange(index, 'flowRate', e.target.value)}
-              style={errors[`range-${index}-flowRate`] ? { borderColor: 'red' } : { marginLeft: '10px' }}
-            />
-            <button type="button" onClick={() => removeRange(index)} style={{ marginLeft: '10px' }}>
-              Remove
-            </button>
-            {errors[`range-${index}-rangeLabel`] && (
-              <div style={{ color: 'red' }}>{errors[`range-${index}-rangeLabel`]}</div>
-            )}
-            {errors[`range-${index}-flowRate`] && (
-              <div style={{ color: 'red' }}>{errors[`range-${index}-flowRate`]}</div>
-            )}
-          </div>
-        ))}
-
         <button type="button" onClick={addRange} style={{ marginBottom: '20px' }}>
-          Add Chamber Range
-        </button>
+          + Add Range
+        </button> 
+        </div>
+
+        {chamberRanges.map((range, index) => {
+          const start = index === 0 ? 0 : chamberRanges
+            .slice(0, index)
+            .reduce((acc, r, i) => {
+              const prevRange = chamberRanges[i];
+              const prevEnd = prevRange?.rangeLabel?.split('-')[1];
+              return prevEnd ? parseInt(prevEnd) + 1 : acc + 30;
+            }, 0);
+          const end = start + 29;
+          const rangePlaceholder = `${start}-${end}`;
+
+          return (
+            <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+              <input
+                type="text"
+                placeholder={`(e.g., ${rangePlaceholder})`}
+                value={range.rangeLabel}
+                onChange={(e) => handleRangeChange(index, 'rangeLabel', e.target.value)}
+                style={errors[`range-${index}-rangeLabel`] ? { borderColor: 'red' } : {}}
+              />
+              <input
+                type="text"
+                placeholder="Flow Rate (e.g., 10)"
+                value={range.flowRate}
+                onChange={(e) => handleRangeChange(index, 'flowRate', e.target.value)}
+                style={errors[`range-${index}-flowRate`] ? { borderColor: 'red', marginLeft: '10px' } : { marginLeft: '10px' }}
+              />
+              <button type="button" onClick={() => removeRange(index)} style={{ marginLeft: '10px' }}>
+                X
+              </button>
+            </div>
+          );
+        })}
+        </div>
+
         <br />
         <button type="submit">Submit</button>
       </form>

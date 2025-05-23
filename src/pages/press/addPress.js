@@ -174,11 +174,13 @@ const AddPressForm = () => {
     const sanitizedData = { ...formData };
 
     if (!formData.dtAvailable) {
+      sanitizedData.dtAvailable = false;
       sanitizedData.dtOpenT = null;
       sanitizedData.dtClosedT = null;
     }
 
     if (!formData.psAvailable) {
+      sanitizedData.psAvailable = false;
       sanitizedData.psFwdFPlateT = null;
       sanitizedData.psFwdT = null;
       sanitizedData.psFwdDT = null;
@@ -187,6 +189,7 @@ const AddPressForm = () => {
     }
 
     if (!formData.cwAvailable) {
+      sanitizedData.cwAvailable = false;
       sanitizedData.cwFwdT = null;
       sanitizedData.cwFwdDT = null;
       sanitizedData.cwRevT = null;
