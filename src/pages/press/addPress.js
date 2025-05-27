@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const initialState = {
@@ -29,7 +29,6 @@ const initialState = {
 };
 
 const placeholders = {
-  pressSize: 'e.g., 1000 x 1000',
   maxChamber: 'e.g., 70',
   cakeAirT: 'HH:MM:SS',
   cyFwdT: 'HH:MM:SS',
@@ -51,7 +50,6 @@ const placeholders = {
   cwUpDT: 'HH:MM:SS',
   cwFlowRate: 'e.g., 10.0'
 };
-
 
 const labels = {
   pressSize: 'Press Size',
@@ -80,7 +78,6 @@ const labels = {
   cwFlowRate: 'CW Flow Rate',
 };
 
-
 const groupedFields = {
   'Press Details': ['pressSize', 'maxChamber', 'cakeAirT', 'cyFwdT', 'cyRevT'],
   'DT Details': ['dtAvailable', 'dtOpenT', 'dtClosedT'],
@@ -93,38 +90,48 @@ const AddPressForm = () => {
   const [errors, setErrors] = useState({});
   const [response, setResponse] = useState(null);
   const [error, setError] = useState(null);
+  const [pressSizes, setPressSizes] = useState([]);
+
+  useEffect(() => {
+    const fetchPressSizes = async () => {
+      try {
+        const res = await axios.get('http://localhost:8081/api/plate/fetchAllPressSize');
+        setPressSizes(res.data);
+      } catch (err) {
+        console.error('Failed to fetch press sizes:', err);
+      }
+    };
+    fetchPressSizes();
+  }, []);
 
   const handleChange = (e) => {
-  const { name, value, type, checked } = e.target;
-  const newValue = type === 'checkbox' ? checked : value;
+    const { name, value, type, checked } = e.target;
+    const newValue = type === 'checkbox' ? checked : value;
 
-  setFormData((prev) => {
-    const updated = { ...prev, [name]: newValue };
+    setFormData((prev) => {
+      const updated = { ...prev, [name]: newValue };
 
-    // Auto-set psAvailable and dtAvailable to true if cwAvailable is checked
-    if (name === 'cwAvailable' && newValue === true) {
-      updated.psAvailable = true;
-      updated.dtAvailable = true;
-    }
+      if (name === 'cwAvailable' && newValue === true) {
+        updated.psAvailable = true;
+        updated.dtAvailable = true;
+      }
 
-    return updated;
-  });
+      return updated;
+    });
 
-  setErrors((prev) => ({ ...prev, [name]: null }));
-};
+    setErrors((prev) => ({ ...prev, [name]: null }));
+  };
 
   const validate = () => {
     const newErrors = {};
     const requiredFields = ['pressSize', 'maxChamber', 'cakeAirT', 'cyFwdT', 'cyRevT', 'cwFlowRate'];
 
-    // Always required fields
     requiredFields.forEach((field) => {
       if (!formData[field].toString().trim()) {
         newErrors[field] = 'This field is required';
       }
     });
 
-    // Conditionally required fields
     if (formData.dtAvailable) {
       ['dtOpenT', 'dtClosedT'].forEach((field) => {
         if (!formData[field].toString().trim()) {
@@ -152,7 +159,6 @@ const AddPressForm = () => {
       });
     }
 
-    // Specific validations
     if (formData.maxChamber && !/^\d+$/.test(formData.maxChamber)) {
       newErrors.maxChamber = 'Must be an integer';
     }
@@ -165,22 +171,18 @@ const AddPressForm = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
 
-    // Prepare data with conditional nulls
     const sanitizedData = { ...formData };
 
     if (!formData.dtAvailable) {
-      sanitizedData.dtAvailable = false;
       sanitizedData.dtOpenT = null;
       sanitizedData.dtClosedT = null;
     }
 
     if (!formData.psAvailable) {
-      sanitizedData.psAvailable = false;
       sanitizedData.psFwdFPlateT = null;
       sanitizedData.psFwdT = null;
       sanitizedData.psFwdDT = null;
@@ -189,7 +191,6 @@ const AddPressForm = () => {
     }
 
     if (!formData.cwAvailable) {
-      sanitizedData.cwAvailable = false;
       sanitizedData.cwFwdT = null;
       sanitizedData.cwFwdDT = null;
       sanitizedData.cwRevT = null;
@@ -215,7 +216,6 @@ const AddPressForm = () => {
     }
   };
 
-
   return (
     <div style={{ border: '1px solid #ccc', padding: '20px', marginTop: '40px' }}>
       <h3>Add Press Configuration</h3>
@@ -224,7 +224,6 @@ const AddPressForm = () => {
           <fieldset key={section} style={{ marginBottom: '20px' }}>
             <legend style={{ fontWeight: 'bold', marginBottom: '10px' }}>{section}</legend>
             {fields.map((key) => {
-              // Conditionally skip rendering based on availability checkboxes
               if (
                 (key.startsWith('dt') && key !== 'dtAvailable' && !formData.dtAvailable) ||
                 (key.startsWith('ps') && key !== 'psAvailable' && !formData.psAvailable) ||
@@ -234,11 +233,24 @@ const AddPressForm = () => {
               }
 
               const isCheckbox = typeof initialState[key] === 'boolean';
+
               return (
                 <div key={key} style={{ marginBottom: '10px' }}>
                   <label>
-                    {labels[key] || key}:
-                    {isCheckbox ? (
+                    {labels[key] || key}:{' '}
+                    {key === 'pressSize' ? (
+                      <select
+                        name="pressSize"
+                        value={formData.pressSize}
+                        onChange={handleChange}
+                        style={errors.pressSize ? { borderColor: 'red' } : {}}
+                      >
+                        <option value="">Select a Press Size</option>
+                        {pressSizes.map((size, index) => (
+                          <option key={index} value={size}>{size}</option>
+                        ))}
+                      </select>
+                    ) : isCheckbox ? (
                       <input
                         type="checkbox"
                         name={key}
