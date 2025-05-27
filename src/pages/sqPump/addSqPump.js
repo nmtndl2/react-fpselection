@@ -133,7 +133,7 @@ useEffect(() => {
                     onChange={handleChange}
                     style={errors[key] ? { borderColor: 'red' } : {}}
                   >
-                    <option value="">-- Select Press Size --</option>
+                    <option value="" disabled hidden>-- Select Press Size --</option>
                     {pressSizes.map((size, idx) => (
                       <option key={idx} value={size}>{size}</option>
                     ))}

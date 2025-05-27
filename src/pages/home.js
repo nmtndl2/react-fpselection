@@ -7,6 +7,8 @@ import AddPlateForm from "./plate/addPlate";
 import AddPressForm from "./press/addPress";
 import AddFeedPumpForm from "./feedPump/addFeddPump";
 import AddSqPumpForm from "./sqPump/addSqPump";
+import GetAllPlateTypes from "./plateType/getAllPlateTypes";
+import DeletePlateTypes from "./plateType/deletePlateTypeList";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -16,6 +18,8 @@ const Home = () => {
   const [showAddPressForm, setShowAddPressForm] = useState(false);
   const [showAddFeedPumpForm, setShowAddFeedPumpForm] = useState(false);
   const [showAddSqPumpForm, setShowAddSqPumpForm] = useState(false);
+  const [showGetAllPlateTypes, setShowGetAllPlateTypes] = useState(false);
+  const [showDeletePlateTypes, setShowDeletePlateTypes] = useState(false);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -46,6 +50,14 @@ const Home = () => {
     setShowAddSqPumpForm(!showAddSqPumpForm);
   };
 
+  const toggleGetAllPlateTypes = () => {
+    setShowGetAllPlateTypes(!showGetAllPlateTypes);
+  }
+
+  const toggleDeletePlateTypes = () => {
+    setShowDeletePlateTypes(!showDeletePlateTypes);
+  }
+
   return (
     <div className="home-container">
       <h2>Welcome to Home Page!</h2>
@@ -64,6 +76,10 @@ const Home = () => {
         <Button label="Add Feed Pump" onClick={toggleAddFeedPumpForm} />
         <span style={{ marginRight: "10px" }}></span>
         <Button label="Add Squeezing Pump" onClick={toggleAddSqPumpForm} />
+        <span style={{ marginRight: "10px" }}></span>
+        <Button label="Get All Plate Types" onClick={toggleGetAllPlateTypes} />
+        <span style={{ marginRight: "10px" }}></span>
+        <Button label="Delete Plate Types" onClick={toggleDeletePlateTypes} />
       </div>
 
       {showInputForm && (
@@ -99,6 +115,18 @@ const Home = () => {
       {showAddSqPumpForm && (
         <div style={{ marginTop: "20px" }}>
           <AddSqPumpForm />
+        </div>
+      )}
+
+      {showGetAllPlateTypes && (
+        <div style={{ marginTop: "20px" }}>
+          <GetAllPlateTypes />
+        </div>
+      )}
+
+      {showDeletePlateTypes && (
+        <div style={{ marginTop: "20px" }}>
+          <DeletePlateTypes />
         </div>
       )}
 

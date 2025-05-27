@@ -10,6 +10,8 @@ import AddPlateForm from "../pages/plate/addPlate";
 import AddPressForm from "../pages/press/addPress";
 import AddFeedPumpForm from "../pages/feedPump/addFeddPump";
 import AddSqPumpForm from "../pages/sqPump/addSqPump";
+import GetAllPlateTypes from "../pages/plateType/getAllPlateTypes";
+import DeletePlateTypes from "../pages/plateType/deletePlateTypeList";
 
 
 // const isAuthenticated = () => {
@@ -38,12 +40,13 @@ const AppRoutes = () => {
 
         {/* Input Form Route */}
         <Route path="/input" element={<PrivateRoute element={<InputForm />} />} />
-        <Route path="/input" element={<PrivateRoute element={<AddPlateTypeForm />} />} />
-        <Route path="/input" element={<PrivateRoute element={<AddPlateForm />} />} />
-        <Route path="/input" element={<PrivateRoute element={<AddPressForm />} />} />
-        <Route path="/input" element={<PrivateRoute element={<AddFeedPumpForm />} />} />
-        <Route path="/input" element={<PrivateRoute element={<AddSqPumpForm />} />} />
-
+        <Route path="/input/add-plate-type" element={<PrivateRoute element={<AddPlateTypeForm />} />} />
+        <Route path="/input/add-plate" element={<PrivateRoute element={<AddPlateForm />} />} />
+        <Route path="/input/add-press" element={<PrivateRoute element={<AddPressForm />} />} />
+        <Route path="/input/add-feed-pump" element={<PrivateRoute element={<AddFeedPumpForm />} />} />
+        <Route path="/input/add-sq-pump" element={<PrivateRoute element={<AddSqPumpForm />} />} />
+        <Route path="/getall-platetypes" element={<PrivateRoute element={<GetAllPlateTypes />} />} />
+        <Route path="/delete-platetypes" element={<PrivateRoute element={<DeletePlateTypes />} />} />
 
         {/* Fallback Route */}
         <Route path="*" element={<Navigate to="/login" replace />} />
