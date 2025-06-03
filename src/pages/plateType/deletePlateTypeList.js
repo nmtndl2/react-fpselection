@@ -48,7 +48,7 @@ function DeletePlateTypeList() {
               <strong>ID:</strong> {plateType.plateTypeId} &nbsp;
               <strong>Name:</strong> {plateType.typeName} &nbsp;
               <button onClick={() => deletePlateType(plateType.plateTypeId)}>
-                Delete
+                <i className="fa-regular fa-trash-can"></i>
               </button>
             </li>
           ))}

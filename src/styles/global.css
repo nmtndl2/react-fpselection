@@ -116,6 +116,10 @@ a:focus, a:hover {
     text-decoration: none !important;
 }
 
+[type=button]:not(:disabled), [type=reset]:not(:disabled), [type=submit]:not(:disabled), button:not(:disabled) {
+    cursor: pointer;
+}
+
 p {
     margin-bottom: 30px;
 }
