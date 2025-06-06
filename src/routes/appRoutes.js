@@ -20,6 +20,8 @@ import DeletePlateTypes from "../pages/plateType/deletePlateTypeList";
 
 export const isAuthenticated = () => !!localStorage.getItem("token");
 
+
+
 // Protect routes using PrivateRoute
 const PrivateRoute = ({ element }) => {
   return isAuthenticated() ? element : <Navigate to="/login" replace />;
