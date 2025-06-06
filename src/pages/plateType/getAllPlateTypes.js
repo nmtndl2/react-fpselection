@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-function PlateTypeManager() {
+function GetAllPlateTypes() {
   const [plateTypes, setPlateTypes] = useState([]);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
@@ -35,34 +35,45 @@ function PlateTypeManager() {
   };
 
   const handleOpenAddPage = () => {
-    window.open('/addPlateType', '_blank'); // Adjust the path as per your routing setup
+    window.open('/input/add-plate-type', '_blank');
   };
 
   return (
     <div style={{ marginTop: '20px' }}>
-      <button onClick={handleOpenAddPage}>➕ Add New Plate Type</button>
-
       {message && <p style={{ marginTop: '10px', color: message.startsWith('✅') ? 'green' : 'red' }}>{message}</p>}
       {error && <p style={{ color: 'red' }}>{error}</p>}
 
       <h3 style={{ marginTop: '30px' }}>All Plate Types</h3>
+      <button onClick={handleOpenAddPage} style={{ marginLeft: 'auto', display: 'block' }}>Add New Plate Type</button>
+
       {plateTypes.length === 0 && !error ? (
         <p>No plate types found.</p>
       ) : (
-        <ul>
-          {plateTypes.map((plateType) => (
-            <li key={plateType.plateTypeId}>
-              <strong>ID:</strong> {plateType.plateTypeId} &nbsp;
-              <strong>Name:</strong> {plateType.typeName} &nbsp;
-              <button onClick={() => deletePlateType(plateType.plateTypeId)}>
-                <i className="fa-regular fa-trash-can"></i>
-              </button>
-            </li>
-          ))}
-        </ul>
+        <table border="1" cellPadding="10" style={{ marginTop: '10px', borderCollapse: 'collapse', width: '100%' }}>
+          <thead style={{ backgroundColor: '#f2f2f2' }}>
+            <tr>
+              <th>Sr. No.</th>
+              <th>Plate Type Name</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {plateTypes.map((plateType, index) => (
+              <tr key={plateType.plateTypeId}>
+                <td>{index + 1}</td>
+                <td>{plateType.typeName}</td>
+                <td>
+                  <button onClick={() => deletePlateType(plateType.plateTypeId)} style={{ color: '#000000' , backgroundColor:'transparent' }}>
+                    <i className="fa-regular fa-trash-can"></i>
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       )}
     </div>
   );
 }
 
-export default PlateTypeManager;
+export default GetAllPlateTypes;
