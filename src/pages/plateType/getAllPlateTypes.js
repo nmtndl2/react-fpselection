@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Loader from '../../components/loader';
 
 function GetAllPlateTypes() {
   const [plateTypes, setPlateTypes] = useState([]);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false); // New loading state
 
   useEffect(() => {
     fetchPlateTypes();
   }, []);
 
   const fetchPlateTypes = async () => {
+    setLoading(true); // Start loader
     try {
       const res = await axios.get('http://localhost:8081/api/platetype/getall');
       setPlateTypes(res.data);
@@ -18,6 +21,8 @@ function GetAllPlateTypes() {
     } catch (err) {
       console.error('Error fetching plate types:', err);
       setError('❌ Failed to fetch plate types.');
+    } finally {
+      setLoading(false); // Stop loader
     }
   };
 
@@ -46,7 +51,9 @@ function GetAllPlateTypes() {
       <h3 style={{ marginTop: '30px' }}>All Plate Types</h3>
       <button onClick={handleOpenAddPage} style={{ marginLeft: 'auto', display: 'block' }}>Add New Plate Type</button>
 
-      {plateTypes.length === 0 && !error ? (
+      {loading ? (
+        <Loader />
+      ) : plateTypes.length === 0 && !error ? (
         <p>No plate types found.</p>
       ) : (
         <table border="1" cellPadding="10" style={{ marginTop: '10px', borderCollapse: 'collapse', width: '100%' }}>
@@ -63,7 +70,7 @@ function GetAllPlateTypes() {
                 <td>{index + 1}</td>
                 <td>{plateType.typeName}</td>
                 <td>
-                  <button onClick={() => deletePlateType(plateType.plateTypeId)} style={{ color: '#000000' , backgroundColor:'transparent' }}>
+                  <button onClick={() => deletePlateType(plateType.plateTypeId)} style={{ color: '#000000', backgroundColor: 'transparent' }}>
                     <i className="fa-regular fa-trash-can"></i>
                   </button>
                 </td>

@@ -23,6 +23,10 @@ const Home = () => {
         <span style={{ marginRight: "10px" }}></span>
         <Button label="Add Plate" onClick={() => window.open("/add-plate", "_blank")} />
         <span style={{ marginRight: "10px" }}></span>
+        <Button label="Plate Manage" onClick={() => window.open("/plate-manage", "_blank")} />
+        <span style={{ marginRight: "10px" }}></span>
+        <Button label="Update Plate" onClick={() => window.open("/update-plate", "_blank")} />
+        <span style={{ marginRight: "10px" }}></span>
         <Button label="Add Press" onClick={() => window.open("/add-press", "_blank")} />
         <span style={{ marginRight: "10px" }}></span>
         <Button label="Add Feed Pump" onClick={() => window.open("/add-feed-pump", "_blank")} />

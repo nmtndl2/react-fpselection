@@ -1,0 +1,36 @@
+ .resizable-table {
+  border-collapse: collapse;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.resizable-table th {
+  position: relative;
+  padding: 10px;
+  border: 1px solid #ddd;
+  background-color: #f2f2f2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.resizer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 5px;
+  height: 100%;
+  cursor: col-resize;
+  user-select: none;
+  z-index: 10;
+}
+
+.resize-line {
+  position: fixed;
+  top: 0;
+  height: 100vh;
+  width: 2px;
+  background-color: blue;
+  z-index: 9999;
+  display: none;
+} 

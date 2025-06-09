@@ -52,24 +52,24 @@ const AddPlateForm = () => {
   };
 
   const validate = () => {
-  const newErrors = {};
-  const isInteger = (value) => /^\d+$/.test(value);
-  const isDouble = (value) => /^(\d+(\.\d+)?|\.\d+)$/.test(value);
+    const newErrors = {};
+    const isInteger = (value) => /^\d+$/.test(value);
+    const isDouble = (value) => /^(\d+(\.\d+)?|\.\d+)$/.test(value);
 
-  if (!plateData.pressSize.trim()) newErrors.pressSize = "Press size is required";
-  if (!plateData.plateType.trim()) newErrors.plateType = "Plate type is required";
-  if (!plateData.volume.trim()) newErrors.volume = "Volume is required";
-  else if (!isInteger(plateData.volume)) newErrors.volume = "Volume must be an integer";
-  if (!plateData.filtrationArea.trim()) newErrors.filtrationArea = "Filtration area is required";
-  else if (!isDouble(plateData.filtrationArea)) newErrors.filtrationArea = "Filtration area must be a number";
-  if (!plateData.cakeThk.trim()) newErrors.cakeThk = "Cake thickness is required";
-  else if (!isInteger(plateData.cakeThk)) newErrors.cakeThk = "Cake thickness must be an integer";
-  if (!plateData.finalCakeThk.trim()) newErrors.finalCakeThk = "Final cake thickness is required";
-  else if (!isInteger(plateData.finalCakeThk)) newErrors.finalCakeThk = "Final cake thickness must be an integer";
+    if (!plateData.pressSize.trim()) newErrors.pressSize = "Press size is required";
+    if (!plateData.plateType.trim()) newErrors.plateType = "Plate type is required";
+    if (!plateData.volume.trim()) newErrors.volume = "Volume is required";
+    else if (!isInteger(plateData.volume)) newErrors.volume = "Volume must be an integer";
+    if (!plateData.filtrationArea.trim()) newErrors.filtrationArea = "Filtration area is required";
+    else if (!isDouble(plateData.filtrationArea)) newErrors.filtrationArea = "Filtration area must be a number";
+    if (!plateData.cakeThk.trim()) newErrors.cakeThk = "Cake thickness is required";
+    else if (!isInteger(plateData.cakeThk)) newErrors.cakeThk = "Cake thickness must be an integer";
+    if (!plateData.finalCakeThk.trim()) newErrors.finalCakeThk = "Final cake thickness is required";
+    else if (!isInteger(plateData.finalCakeThk)) newErrors.finalCakeThk = "Final cake thickness must be an integer";
 
-  setErrors(newErrors); // Set all errors
-  return Object.keys(newErrors).length === 0; // Valid if no errors
-};
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -108,7 +108,6 @@ const AddPlateForm = () => {
                       value={plateData[key]}
                       onChange={handleChange}
                       style={errors[key] ? { borderColor: 'red' } : {}}
-            
                     >
                       <option value="" disabled hidden>Select Plate Type</option>
                       {plateTypes.map(pt => (
@@ -125,7 +124,6 @@ const AddPlateForm = () => {
                       onChange={handleChange}
                       placeholder={placeholders[key] || `Enter ${labels[key] || key}`}
                       style={errors[key] ? { borderColor: 'red' } : {}}
-                   
                     />
                   )}
                 </label>
