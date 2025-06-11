@@ -19,23 +19,19 @@ const Home = () => {
         <span style={{ marginRight: "10px" }}></span>
         <Button label="Open Input Form" onClick={() => window.open("/input-form", "_blank")} />
         <span style={{ marginRight: "10px" }}></span>
-        <Button label="Add Plate Type" onClick={() => window.open("/add-plate-type", "_blank")} />
-        <span style={{ marginRight: "10px" }}></span>
-        <Button label="Add Plate" onClick={() => window.open("/add-plate", "_blank")} />
-        <span style={{ marginRight: "10px" }}></span>
         <Button label="Plate Manage" onClick={() => window.open("/plate-manage", "_blank")} />
-        <span style={{ marginRight: "10px" }}></span>
-        <Button label="Update Plate" onClick={() => window.open("/update-plate", "_blank")} />
         <span style={{ marginRight: "10px" }}></span>
         <Button label="Add Press" onClick={() => window.open("/add-press", "_blank")} />
         <span style={{ marginRight: "10px" }}></span>
         <Button label="Add Feed Pump" onClick={() => window.open("/add-feed-pump", "_blank")} />
         <span style={{ marginRight: "10px" }}></span>
+        <Button label="Update Feed Pump" onClick={() => window.open("/update-feed-pump", "_blank")} />
+        <span style={{ marginRight: "10px" }}></span>
+        <Button label="Manage Feed Pump" onClick={() => window.open("/manage-feed-pump", "_blank")} />
+        <span style={{ marginRight: "10px" }}></span>
         <Button label="Add Squeezing Pump" onClick={() => window.open("/add-sq-pump", "_blank")} />
         <span style={{ marginRight: "10px" }}></span>
-        <Button label="Get All Plate Types" onClick={() => window.open("/get-all-plate-types", "_blank")} />
-        <span style={{ marginRight: "10px" }}></span>
-        <Button label="Delete Plate Types" onClick={() => window.open("/delete-plate-types", "_blank")} />
+        <Button label="Plate Type Manage" onClick={() => window.open("/get-all-plate-types", "_blank")} />
       </div>
     </div>
   );

@@ -21,6 +21,8 @@ import PlateManage from "../pages/plate/plateManage";
 import UpdatePlate from "../pages/plate/updatePlate";
 import AddPressForm from "../pages/press/addPress";
 import AddFeedPumpForm from "../pages/feedPump/addFeddPump";
+import UpdateFeedPump from "../pages/feedPump/updateFeedPump";
+import ManageFeedPump from "../pages/feedPump/feedPumpManage";
 import AddSqPumpForm from "../pages/sqPump/addSqPump";
 
 // Authentication Check
@@ -48,6 +50,8 @@ function AppRoutes() {
         <Route path="/update-plate/:plateId" element={<PrivateRoute element={<UpdatePlate />} />} />
         <Route path="/add-press" element={<PrivateRoute element={<AddPressForm />} />} />
         <Route path="/add-feed-pump" element={<PrivateRoute element={<AddFeedPumpForm />} />} />
+        <Route path="/update-feed-pump/:id" element={<PrivateRoute element={<UpdateFeedPump />} />} />
+        <Route path="/manage-feed-pump" element={<PrivateRoute element={<ManageFeedPump />} />} />
         <Route path="/add-sq-pump" element={<PrivateRoute element={<AddSqPumpForm />} />} />
         <Route path="/get-all-plate-types" element={<PrivateRoute element={<GetAllPlateTypes />} />} />
         <Route path="/delete-plate-types" element={<PrivateRoute element={<DeletePlateTypes />} />} />

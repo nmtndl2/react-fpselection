@@ -113,7 +113,7 @@ function PlateManagement() {
                     <i className="fa-regular fa-trash-can"></i>
                   </button>
                   <button onClick={() => handleEditPlate(plate.plateId)} style={{ color: 'blue', marginLeft: '10px' }}>
-                    ✏️
+                    <i className="fa-light fa-pen-to-square"></i>
                   </button>
                 </td>
               </tr>

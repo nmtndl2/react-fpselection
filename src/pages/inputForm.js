@@ -87,13 +87,15 @@ const InputForm = () => {
     const validate = () => {
         const newErrors = {};
         const isInteger = (value) => /^\d+$/.test(value);
+        const isDouble = (value) => /^(\d+(\.\d+)?|\.\d+)$/.test(value);
+
 
         if (!formData.clientName.trim()) newErrors.clientName = "Client name is required";
         if (!formData.sludgeName.trim()) newErrors.sludgeName = "Sludge name is required";
         if (!formData.sludgeType.trim()) newErrors.sludgeType = "Sludge type is required";
 
         if (!isInteger(formData.sludgeQty)) newErrors.sludgeQty = "Sludge Qty must be an integer";
-        if (!isInteger(formData.drySolidParticle)) newErrors.drySolidParticle = "Dry solid particle must be an integer";
+        if (!isDouble(formData.drySolidParticle)) newErrors.drySolidParticle = "Dry solid particle must be a decimal";
         if (!isInteger(formData.moistureContain)) newErrors.moistureContain = "Moisture content must be an integer";
 
         if (!formData.plateType.trim()) newErrors.plateType = "Plate type is required";
@@ -115,8 +117,8 @@ const InputForm = () => {
             [name]: value
         }));
 
-        const integerFields = ['sludgeQty', 'drySolidParticle', 'moistureContain', 'noOfPress', 'noOfBatch', 'cusFeedRate'];
-        const floatFields = ['densityOfDrySolid'];
+        const integerFields = ['sludgeQty', 'moistureContain', 'noOfPress', 'noOfBatch', 'cusFeedRate'];
+        const floatFields = ['drySolidParticle', 'densityOfDrySolid'];
 
         if (integerFields.includes(name)) {
             if (value === '' || /^[0-9]*$/.test(value)) {
@@ -190,16 +192,16 @@ const InputForm = () => {
     clientRef: 'Enter client reference',
     sludgeName: 'Enter sludge name',
     sludgeType: 'Enter sludge type',
-    sludgeQty: 'Enter sludge quantity (e.g., in kg)',
+    sludgeQty: 'Enter sludge quantity',
     drySolidParticle: 'Enter % of dry solid particles',
-    densityOfDrySolid: 'Enter density of dry solid (e.g., kg/m³)',
+    densityOfDrySolid: 'Enter density of dry solid',
     moistureContain: 'Enter moisture content (%)',
     noOfPress: 'Enter number of presses',
     noOfBatch: 'Enter number of batches',
     plateType: 'Select plate type',
     washingT: 'Enter washing time (HH:mm:ss)',
     sqOutletT: 'Enter squeeze outlet time',
-    cusFeedRate: 'Enter custom feed rate (e.g., L/min)',
+    cusFeedRate: 'Enter custom feed rate',
     pressSizes: 'Select press sizes',
     cakeWashing: '',
     clothWashing: '',
