@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Loader from '../../components/loader'; // ✅ Import your loader
 
 const initialState = {
   pressSize: '',
@@ -91,14 +92,18 @@ const AddPressForm = () => {
   const [response, setResponse] = useState(null);
   const [error, setError] = useState(null);
   const [pressSizes, setPressSizes] = useState([]);
+  const [loading, setLoading] = useState(false); // ✅ loader state
 
   useEffect(() => {
     const fetchPressSizes = async () => {
+      setLoading(true);
       try {
         const res = await axios.get('http://localhost:8081/api/plate/fetchAllPressSize');
         setPressSizes(res.data);
       } catch (err) {
         console.error('Failed to fetch press sizes:', err);
+      } finally {
+        setLoading(false);
       }
     };
     fetchPressSizes();
@@ -110,12 +115,10 @@ const AddPressForm = () => {
 
     setFormData((prev) => {
       const updated = { ...prev, [name]: newValue };
-
       if (name === 'cwAvailable' && newValue === true) {
         updated.psAvailable = true;
         updated.dtAvailable = true;
       }
-
       return updated;
     });
 
@@ -135,7 +138,7 @@ const AddPressForm = () => {
     if (formData.dtAvailable) {
       ['dtOpenT', 'dtClosedT'].forEach((field) => {
         if (!formData[field].toString().trim()) {
-          newErrors[field] = 'This field is required when DT is available';
+          newErrors[field] = 'Required when DT is available';
         }
       });
     }
@@ -143,7 +146,7 @@ const AddPressForm = () => {
     if (formData.psAvailable) {
       ['psFwdFPlateT', 'psFwdT', 'psFwdDT', 'psRevT', 'psRevDT'].forEach((field) => {
         if (!formData[field].toString().trim()) {
-          newErrors[field] = 'This field is required when PS is available';
+          newErrors[field] = 'Required when PS is available';
         }
       });
     }
@@ -154,7 +157,7 @@ const AddPressForm = () => {
         'cwDownT', 'cwDownDT', 'cwUpT', 'cwUpDT'
       ].forEach((field) => {
         if (!formData[field].toString().trim()) {
-          newErrors[field] = 'This field is required when CW is available';
+          newErrors[field] = 'Required when CW is available';
         }
       });
     }
@@ -181,7 +184,6 @@ const AddPressForm = () => {
       sanitizedData.dtOpenT = null;
       sanitizedData.dtClosedT = null;
     }
-
     if (!formData.psAvailable) {
       sanitizedData.psFwdFPlateT = null;
       sanitizedData.psFwdT = null;
@@ -189,7 +191,6 @@ const AddPressForm = () => {
       sanitizedData.psRevT = null;
       sanitizedData.psRevDT = null;
     }
-
     if (!formData.cwAvailable) {
       sanitizedData.cwFwdT = null;
       sanitizedData.cwFwdDT = null;
@@ -201,6 +202,7 @@ const AddPressForm = () => {
       sanitizedData.cwUpDT = null;
     }
 
+    setLoading(true);
     try {
       const res = await axios.post(
         'http://localhost:8081/api/press/addPress',
@@ -213,79 +215,82 @@ const AddPressForm = () => {
       const errorMsg = err.response?.data?.message || 'Failed to add press configuration.';
       setError(`❌ ${errorMsg}`);
       setResponse(null);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div style={{ border: '1px solid #ccc', padding: '20px', marginTop: '40px' }}>
       <h3>Add Press Configuration</h3>
-      <form onSubmit={handleSubmit}>
-        {Object.entries(groupedFields).map(([section, fields]) => (
-          <fieldset key={section} style={{ marginBottom: '20px' }}>
-            <legend style={{ fontWeight: 'bold', marginBottom: '10px' }}>{section}</legend>
-            {fields.map((key) => {
-              if (
-                (key.startsWith('dt') && key !== 'dtAvailable' && !formData.dtAvailable) ||
-                (key.startsWith('ps') && key !== 'psAvailable' && !formData.psAvailable) ||
-                (key.startsWith('cw') && key !== 'cwAvailable' && !formData.cwAvailable)
-              ) {
-                return null;
-              }
 
-              const isCheckbox = typeof initialState[key] === 'boolean';
+      {loading && <Loader />}
 
-              return (
-                <div key={key} style={{ marginBottom: '10px' }}>
-                  <label>
-                    {labels[key] || key}:{' '}
-                    {key === 'pressSize' ? (
-                      <select
-                        name="pressSize"
-                        value={formData.pressSize}
-                        onChange={handleChange}
-                        style={errors.pressSize ? { borderColor: 'red' } : {}}
-                      >
-                        <option value="">Select a Press Size</option>
-                        {pressSizes.map((size, index) => (
-                          <option key={index} value={size}>{size}</option>
-                        ))}
-                      </select>
-                    ) : isCheckbox ? (
-                      <input
-                        type="checkbox"
-                        name={key}
-                        checked={formData[key]}
-                        onChange={handleChange}
-                      />
-                    ) : (
-                      <input
-                        type="text"
-                        name={key}
-                        value={formData[key]}
-                        onChange={handleChange}
-                        placeholder={placeholders[key] || `Enter ${key}`}
-                        style={errors[key] ? { borderColor: 'red' } : {}}
-                      />
-                    )}
-                  </label>
-                  {errors[key] && (
-                    <div style={{ color: 'red', fontSize: '12px' }}>{errors[key]}</div>
-                  )}
-                </div>
-              );
-            })}
-          </fieldset>
-        ))}
+      {!loading && (
+        <>
+          <form onSubmit={handleSubmit}>
+            {Object.entries(groupedFields).map(([section, fields]) => (
+              <fieldset key={section} style={{ marginBottom: '20px' }}>
+                <legend style={{ fontWeight: 'bold', marginBottom: '10px' }}>{section}</legend>
+                {fields.map((key) => {
+                  if (
+                    (key.startsWith('dt') && key !== 'dtAvailable' && !formData.dtAvailable) ||
+                    (key.startsWith('ps') && key !== 'psAvailable' && !formData.psAvailable) ||
+                    (key.startsWith('cw') && key !== 'cwAvailable' && !formData.cwAvailable)
+                  ) return null;
 
-        <button type="submit" style={{ padding: '10px 20px', fontWeight: 'bold' }}>Submit</button>
-      </form>
+                  const isCheckbox = typeof initialState[key] === 'boolean';
 
-      {response && (
-        <div style={{ color: 'green', marginTop: '10px' }}>
-          ✅ Press added successfully!
-        </div>
+                  return (
+                    <div key={key} style={{ marginBottom: '10px' }}>
+                      <label>
+                        {labels[key] || key}:{' '}
+                        {key === 'pressSize' ? (
+                          <select
+                            name="pressSize"
+                            value={formData.pressSize}
+                            onChange={handleChange}
+                            style={errors.pressSize ? { borderColor: 'red' } : {}}
+                          >
+                            <option value="">Select a Press Size</option>
+                            {pressSizes.map((size, index) => (
+                              <option key={index} value={size}>{size}</option>
+                            ))}
+                          </select>
+                        ) : isCheckbox ? (
+                          <input
+                            type="checkbox"
+                            name={key}
+                            checked={formData[key]}
+                            onChange={handleChange}
+                          />
+                        ) : (
+                          <input
+                            type="text"
+                            name={key}
+                            value={formData[key]}
+                            onChange={handleChange}
+                            placeholder={placeholders[key] || `Enter ${key}`}
+                            style={errors[key] ? { borderColor: 'red' } : {}}
+                          />
+                        )}
+                      </label>
+                      {errors[key] && (
+                        <div style={{ color: 'red', fontSize: '12px' }}>{errors[key]}</div>
+                      )}
+                    </div>
+                  );
+                })}
+              </fieldset>
+            ))}
+
+            <button type="submit" style={{ padding: '10px 20px', fontWeight: 'bold' }}>Submit</button>
+          </form>
+
+          {response && <div style={{ color: 'green', marginTop: '10px' }}>✅ Press added successfully!</div>}
+          {error && <div style={{ color: 'red', marginTop: '10px' }}>{error}</div>}
+        </>
       )}
-      {error && <div style={{ color: 'red', marginTop: '10px' }}>{error}</div>}
     </div>
   );
 };

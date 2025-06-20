@@ -37,7 +37,7 @@ function UpdatePlate() {
     cakeThk: '',
     finalCakeThk: ''
   });
-  const [plateTypes, setPlateTypes] = useState([]);
+  const [plateTypes, setPlateTypes] = useState(       []);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState('');

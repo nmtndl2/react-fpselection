@@ -40,7 +40,7 @@ function GetAllPlateTypes() {
   };
 
   const handleOpenAddPage = () => {
-    window.open('/input/add-plate-type', '_blank');
+    window.open('/add-plate-type', '_blank');
   };
 
   return (

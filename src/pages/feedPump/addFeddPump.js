@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import Loader from '../../components/loader'; // ✅ Import Loader
 
 const initialChamberRange = { rangeLabel: '', flowRate: '' };
 
@@ -9,6 +10,7 @@ const AddFeedPumpForm = () => {
   const [errors, setErrors] = useState({});
   const [response, setResponse] = useState(null);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false); // ✅ Add loading state
 
   const handlePressSizeChange = (e) => {
     setPressSize(e.target.value);
@@ -55,6 +57,7 @@ const AddFeedPumpForm = () => {
     e.preventDefault();
     if (!validate()) return;
 
+    setLoading(true); // ✅ Start loader
     try {
       const payload = {
         pressSize,
@@ -74,80 +77,89 @@ const AddFeedPumpForm = () => {
       const errorMsg = err.response?.data?.message || 'Failed to add feed pump configuration.';
       setError(`❌ ${errorMsg}`);
       setResponse(null);
+    } finally {
+      setLoading(false); // ✅ Stop loader
     }
   };
 
   return (
     <div style={{ border: '1px solid #ccc', padding: '20px', marginTop: '40px' }}>
       <h3>Add Feed Pump Configuration</h3>
-      <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: '15px' }}>
-          <label>
-            Press Size:
-            <input
-              type="text"
-              value={pressSize}
-              onChange={handlePressSizeChange}
-              placeholder="e.g., 1500 x 1500"
-              style={errors.pressSize ? { borderColor: 'red' } : {}}
-            />
-          </label>
-          {errors.pressSize && <div style={{ color: 'red' }}>{errors.pressSize}</div>}
-        </div>
 
-        <div>
-        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-        <h4>Chamber Ranges</h4>
-        <button type="button" onClick={addRange} style={{ marginBottom: '20px' }}>
-          + Add Range
-        </button> 
-        </div>
+      {loading && <Loader />} {/* ✅ Show loader when loading */}
 
-        {chamberRanges.map((range, index) => {
-          const start = index === 0 ? 0 : chamberRanges
-            .slice(0, index)
-            .reduce((acc, r, i) => {
-              const prevRange = chamberRanges[i];
-              const prevEnd = prevRange?.rangeLabel?.split('-')[1];
-              return prevEnd ? parseInt(prevEnd) + 1 : acc + 30;
-            }, 0);
-          const end = start + 29;
-          const rangePlaceholder = `${start}-${end}`;
-
-          return (
-            <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-              <input
-                type="text"
-                placeholder={`(e.g., ${rangePlaceholder})`}
-                value={range.rangeLabel}
-                onChange={(e) => handleRangeChange(index, 'rangeLabel', e.target.value)}
-                style={errors[`range-${index}-rangeLabel`] ? { borderColor: 'red' } : {}}
-              />
-              <input
-                type="text"
-                placeholder="Flow Rate (e.g., 10)"
-                value={range.flowRate}
-                onChange={(e) => handleRangeChange(index, 'flowRate', e.target.value)}
-                style={errors[`range-${index}-flowRate`] ? { borderColor: 'red', marginLeft: '10px' } : { marginLeft: '10px' }}
-              />
-              <button type="button" onClick={() => removeRange(index)} style={{ marginLeft: '10px' }}>
-                X
-              </button>
+      {!loading && (
+        <>
+          <form onSubmit={handleSubmit}>
+            <div style={{ marginBottom: '15px' }}>
+              <label>
+                Press Size:
+                <input
+                  type="text"
+                  value={pressSize}
+                  onChange={handlePressSizeChange}
+                  placeholder="e.g., 1500 x 1500"
+                  style={errors.pressSize ? { borderColor: 'red' } : {}}
+                />
+              </label>
+              {errors.pressSize && <div style={{ color: 'red' }}>{errors.pressSize}</div>}
             </div>
-          );
-        })}
-        </div>
 
-        <br />
-        <button type="submit">Submit</button>
-      </form>
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <h4>Chamber Ranges</h4>
+                <button type="button" onClick={addRange} style={{ marginBottom: '20px' }}>
+                  + Add Range
+                </button>
+              </div>
 
-      {response && (
-        <div style={{ color: 'green', marginTop: '10px' }}>
-          ✅ Feed pump configuration added successfully!
-        </div>
+              {chamberRanges.map((range, index) => {
+                const start = index === 0 ? 0 : chamberRanges
+                  .slice(0, index)
+                  .reduce((acc, r, i) => {
+                    const prevRange = chamberRanges[i];
+                    const prevEnd = prevRange?.rangeLabel?.split('-')[1];
+                    return prevEnd ? parseInt(prevEnd) + 1 : acc + 30;
+                  }, 0);
+                const end = start + 29;
+                const rangePlaceholder = `${start}-${end}`;
+
+                return (
+                  <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                    <input
+                      type="text"
+                      placeholder={`(e.g., ${rangePlaceholder})`}
+                      value={range.rangeLabel}
+                      onChange={(e) => handleRangeChange(index, 'rangeLabel', e.target.value)}
+                      style={errors[`range-${index}-rangeLabel`] ? { borderColor: 'red' } : {}}
+                    />
+                    <input
+                      type="text"
+                      placeholder="Flow Rate (e.g., 10)"
+                      value={range.flowRate}
+                      onChange={(e) => handleRangeChange(index, 'flowRate', e.target.value)}
+                      style={errors[`range-${index}-flowRate`] ? { borderColor: 'red', marginLeft: '10px' } : { marginLeft: '10px' }}
+                    />
+                    <button type="button" onClick={() => removeRange(index)} style={{ marginLeft: '10px' }}>
+                      X
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+
+            <br />
+            <button type="submit">Submit</button>
+          </form>
+
+          {response && (
+            <div style={{ color: 'green', marginTop: '10px' }}>
+              ✅ Feed pump configuration added successfully!
+            </div>
+          )}
+          {error && <div style={{ color: 'red', marginTop: '10px' }}>{error}</div>}
+        </>
       )}
-      {error && <div style={{ color: 'red', marginTop: '10px' }}>{error}</div>}
     </div>
   );
 };

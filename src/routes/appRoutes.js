@@ -19,11 +19,19 @@ import DeletePlateTypes from "../pages/plateType/deletePlateTypeList";
 import AddPlateForm from "../pages/plate/addPlate";
 import PlateManage from "../pages/plate/plateManage";
 import UpdatePlate from "../pages/plate/updatePlate";
+// Press Pages
 import AddPressForm from "../pages/press/addPress";
+import UpdatePress from "../pages/press/updatePress";
+import PressManage from "../pages/press/pressManage";
+import AddPressConfig from "../pages/press/addPressConfig";
+// Feed Pump Pages
 import AddFeedPumpForm from "../pages/feedPump/addFeddPump";
 import UpdateFeedPump from "../pages/feedPump/updateFeedPump";
 import ManageFeedPump from "../pages/feedPump/feedPumpManage";
+// Sq Pump Pages
 import AddSqPumpForm from "../pages/sqPump/addSqPump";
+import UpdateSqPump from "../pages/sqPump/updateSqPump";
+import ManageSqPump from "../pages/sqPump/manageSqPump";
 
 // Authentication Check
 const isAuthenticated = () => !!localStorage.getItem("token");
@@ -49,10 +57,15 @@ function AppRoutes() {
         <Route path="/plate-manage" element={<PrivateRoute element={<PlateManage />} />} />
         <Route path="/update-plate/:plateId" element={<PrivateRoute element={<UpdatePlate />} />} />
         <Route path="/add-press" element={<PrivateRoute element={<AddPressForm />} />} />
+        <Route path="/update-press/:pressId" element={<PrivateRoute element={<UpdatePress />} />} />
+        <Route path="/press-manage" element={<PrivateRoute element={<PressManage />} />} />
+        <Route path="/add-press-config" element={<PrivateRoute element={<AddPressConfig />} />} />
         <Route path="/add-feed-pump" element={<PrivateRoute element={<AddFeedPumpForm />} />} />
         <Route path="/update-feed-pump/:id" element={<PrivateRoute element={<UpdateFeedPump />} />} />
         <Route path="/manage-feed-pump" element={<PrivateRoute element={<ManageFeedPump />} />} />
         <Route path="/add-sq-pump" element={<PrivateRoute element={<AddSqPumpForm />} />} />
+        <Route path="/update-sq-pump/:id" element={<PrivateRoute element={<UpdateSqPump />} />} />
+        <Route path="/manage-sq-pump" element={<PrivateRoute element={<ManageSqPump />} />} />
         <Route path="/get-all-plate-types" element={<PrivateRoute element={<GetAllPlateTypes />} />} />
         <Route path="/delete-plate-types" element={<PrivateRoute element={<DeletePlateTypes />} />} />
 
