@@ -24,6 +24,8 @@ const InputForm = () => {
         cusFeedRate: '',
         cakeWashing: false,
         clothWashing: false,
+        plateShifter: false,
+        dripTray: false,
         pressSizes: [],
     });
 
@@ -49,13 +51,15 @@ const InputForm = () => {
         cusFeedRate: 'Custom Feed Rate (L/min)',
         cakeWashing: 'Cake Washing',
         clothWashing: 'Cloth Washing',
+        plateShifter: 'Plate Shifter',
+        dripTray: 'Drip Tray',
         pressSizes: 'Available Press Sizes',
     };
 
     const groupedFields = {
         "Client Details": ['clientName', 'clientRef'],
         "Sludge Information": ['sludgeName', 'sludgeType', 'sludgeQty', 'drySolidParticle', 'densityOfDrySolid', 'moistureContain'],
-        "Press Configuration": ['plateType', 'cakeWashing', 'clothWashing', 'pressSizes'],
+        "Press Configuration": ['plateType', 'cakeWashing', 'clothWashing', 'plateShifter', 'dripTray', 'pressSizes'],
         "Cycle Timing Settings": ['cusFeedRate', 'noOfPress', 'noOfBatch']
     };
 
@@ -99,6 +103,9 @@ const InputForm = () => {
         if (!isInteger(formData.moistureContain)) newErrors.moistureContain = "Moisture content must be an integer";
 
         if (!formData.plateType.trim()) newErrors.plateType = "Plate type is required";
+        if (formData.pressSizes.length === 0) {
+            newErrors.pressSizes = "At least one press size must be selected";
+        }
 
         if (formData.cakeWashing === true) {
             if (!formData.washingT.trim()) {
@@ -188,24 +195,26 @@ const InputForm = () => {
     };
 
     const placeholders = {
-    clientName: 'Enter client name',
-    clientRef: 'Enter client reference',
-    sludgeName: 'Enter sludge name',
-    sludgeType: 'Enter sludge type',
-    sludgeQty: 'Enter sludge quantity',
-    drySolidParticle: 'Enter % of dry solid particles',
-    densityOfDrySolid: 'Enter density of dry solid',
-    moistureContain: 'Enter moisture content (%)',
-    noOfPress: 'Enter number of presses',
-    noOfBatch: 'Enter number of batches',
-    plateType: 'Select plate type',
-    washingT: 'Enter washing time (HH:mm:ss)',
-    sqOutletT: 'Enter squeeze outlet time',
-    cusFeedRate: 'Enter custom feed rate',
-    pressSizes: 'Select press sizes',
-    cakeWashing: '',
-    clothWashing: '',
-};
+        clientName: 'Enter client name',
+        clientRef: 'Enter client reference',
+        sludgeName: 'Enter sludge name',
+        sludgeType: 'Enter sludge type',
+        sludgeQty: 'Enter sludge quantity',
+        drySolidParticle: 'Enter % of dry solid particles',
+        densityOfDrySolid: 'Enter density of dry solid',
+        moistureContain: 'Enter moisture content (%)',
+        noOfPress: 'Enter number of presses',
+        noOfBatch: 'Enter number of batches',
+        plateType: 'Select plate type',
+        washingT: 'Enter washing time (HH:mm:ss)',
+        sqOutletT: 'Enter squeeze outlet time',
+        cusFeedRate: 'Enter custom feed rate',
+        pressSizes: 'Select press sizes',
+        plateShifter: '',
+        dripTray: '',
+        cakeWashing: '',
+        clothWashing: '',
+    };
 
     <TimePicker
         onChange={(value) =>
@@ -230,7 +239,7 @@ const InputForm = () => {
                                             name={key}
                                             value={formData[key]}
                                             onChange={handleChange}
-                                            
+
                                             style={errors[key] ? { borderColor: 'red' } : {}}
                                         >
                                             <option value="" disabled hidden>Select Plate Type</option>
@@ -238,9 +247,9 @@ const InputForm = () => {
                                                 <option key={pt.plateTypeId} value={pt.typeName}>{pt.typeName}</option>
                                             ))}
                                         </select>
-                                    ) : key === 'cakeWashing' || key === 'clothWashing' ? (
+                                    ) : ['cakeWashing', 'clothWashing', 'plateShifter', 'dripTray'].includes(key) ? (
                                         <div>
-                                            <div style={{ display: 'grid', gridTemplateColumns: '50px auto', gap: '10px' }}>
+                                            <div style={{ display: 'grid', gridTemplateColumns: '60px 60px', gap: '10px' }}>
                                                 <label>
                                                     <input
                                                         type="radio"
@@ -251,10 +260,10 @@ const InputForm = () => {
                                                             setFormData((prev) => ({
                                                                 ...prev,
                                                                 [key]: true,
-                                                                ...(key === 'cakeWashing' && { washingT: prev.washingT }) // keep washingT unchanged if cakeWashing true
+                                                                ...(key === 'cakeWashing' && { washingT: prev.washingT })
                                                             }))
                                                         }
-                                                    />{' '}
+                                                    />
                                                     Yes
                                                 </label>
                                                 <label>
@@ -267,10 +276,10 @@ const InputForm = () => {
                                                             setFormData((prev) => ({
                                                                 ...prev,
                                                                 [key]: false,
-                                                                ...(key === 'cakeWashing' && { washingT: '' }) // clear washingT if cakeWashing is set to false
+                                                                ...(key === 'cakeWashing' && { washingT: '' })
                                                             }))
                                                         }
-                                                    />{' '}
+                                                    />
                                                     No
                                                 </label>
                                             </div>
@@ -300,11 +309,6 @@ const InputForm = () => {
                                                     </label>
                                                 </div>
                                             ))}
-                                            {errors[key] && (
-                                                <div style={{ color: 'red', fontSize: '12px', marginTop: '4px' }}>
-                                                    {errors[key]}
-                                                </div>
-                                            )}
                                         </div>
                                     ) : (
                                         <input
@@ -361,7 +365,7 @@ const InputForm = () => {
                             </div>
                         )}
 
-                        
+
 
                     </fieldset>
                 ))}

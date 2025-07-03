@@ -88,7 +88,7 @@ const UpdateSqueezePumpForm = () => {
 
     const validate = () => {
         const newErrors = {};
-        const isNumber = v => !isNaN(v) && v.trim() !== '';
+        const isNumber = v => !isNaN(v) && String(v).trim() !== '';
 
         if (!formData.pressSize.trim()) newErrors.pressSize = 'Press size is required';
         if (!isNumber(formData.sqMaxTMin)) newErrors.sqMaxTMin = 'Valid Max T min is required';

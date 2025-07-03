@@ -54,7 +54,15 @@ function UpdatePlate() {
       setLoading(true);
       try {
         const res = await axios.get(`http://localhost:8081/api/plate/get/${plateId}`);
-        setFormData(res.data);
+        const data = res.data;
+          setFormData({
+            pressSize: String(data.pressSize ?? ''),
+            plateType: String(data.plateType ?? ''),
+            volume: String(data.volume ?? ''),
+            filtrationArea: String(data.filtrationArea ?? ''),
+            cakeThk: String(data.cakeThk ?? ''),
+            finalCakeThk: String(data.finalCakeThk ?? '')
+          });
       } catch {
         setError('❌ Failed to load plate data');
       } finally {
