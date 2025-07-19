@@ -26,7 +26,7 @@ function ManageSqueezePump() {
   };
 
   const handleOpenAddPage = () => {
-    window.open('/add-squeeze-pump', '_blank');
+    window.open('/add-sq-pum', '_blank');
   };
 
   const handleEditPump = (id) => {
@@ -36,7 +36,7 @@ function ManageSqueezePump() {
   const handleDeletePump = async (id) => {
     if (!window.confirm('Are you sure you want to delete this squeezing pump?')) return;
     try {
-      await axios.delete(`http://localhost:8081/api/squeezing/deletePump/${id}`);
+      await axios.delete(`http://localhost:8081/api/squeezing/delete/${id}`);
       setMessage('✅ Squeeze Pump deleted successfully!');
       fetchSqueezePumps();
     } catch (err) {

@@ -13,7 +13,7 @@ const labels = {
 const placeholders = {
     pressSize: 'e.g., 1500 x 1500',
     sqMaxTMin: 'e.g., 25',
-    sqInletWater: 'e.g., 55',
+    sqInletWater: 'e.g., 55//',
     flowRate: 'Flow Rate (e.g., 2.0)'
 };
 
@@ -91,7 +91,7 @@ const UpdateSqueezePumpForm = () => {
         const isNumber = v => !isNaN(v) && String(v).trim() !== '';
 
         if (!formData.pressSize.trim()) newErrors.pressSize = 'Press size is required';
-        if (!isNumber(formData.sqMaxTMin)) newErrors.sqMaxTMin = 'Valid Max T min is required';
+        if (formData.sqMaxTMin) newErrors.sqMaxTMin = 'Valid Max T min is required';
         if (!isNumber(formData.sqInletWater)) newErrors.sqInletWater = 'Valid Inlet Water is required';
 
         flowRates.forEach((f, idx) => {
